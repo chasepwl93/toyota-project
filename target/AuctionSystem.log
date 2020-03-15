@@ -1,0 +1,8 @@
+Mar 15, 2020 1:21:59 PM utils.Log addLog
+INFO: Menu frame created
+Mar 15, 2020 1:22:00 PM model.RecordsDAO <init>
+INFO: Connection to SQLite has been established.
+Mar 15, 2020 1:22:01 PM utils.Log addLog
+INFO: Live Auction Started
+Mar 15, 2020 1:22:18 PM utils.Log addLog
+INFO: Live Auction Started

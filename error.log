@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="windows-1252" standalone="no"?>
+<!DOCTYPE log SYSTEM "logger.dtd">
+<log>
+<record>
+  <date>2020-03-01T12:33:27</date>
+  <millis>1583037207906</millis>
+  <sequence>0</sequence>
+  <logger>model.CarsDAO</logger>
+  <level>SEVERE</level>
+  <class>model.CarsDAO</class>
+  <method>LogError</method>
+  <thread>15</thread>
+  <message>java.io.FileNotFoundException: C:\Users\William\Desktop\40B84200.xlsx (The process cannot access the file because it is being used by another process)</message>
+</record>
+</log>
