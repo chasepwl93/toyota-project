@@ -51,7 +51,7 @@ public class AuctionReport {
 	
 	// create a table model to set Column headers to this table
 	Object[] columns = { "Item No.", "Brand", "Model/Grade", "Insp", "Starting Price",
-	"MSP", "Final Price", "Status", "Bidder No." };
+	"MSP", "Final Price", "Status", "Bidder No.", "Bidder Name"};
 	
 	private DefaultTableModel model = new DefaultTableModel();
 	
@@ -96,10 +96,11 @@ public class AuctionReport {
 					int itemNo = Integer.parseInt(model.getValueAt(row, 0).toString());
 					String status = model.getValueAt(row, 7).toString();
 					int bidderNo = Integer.parseInt(model.getValueAt(row, 8).toString());
+					String bidderName =  model.getValueAt(row, 9).toString();
 					
 					System.out.println("Row" + row + "Item No " + itemNo + "BidderNo" + bidderNo);
 					
-					recordWindow = new AuctionSalesRecord(itemNo, status, bidderNo);
+					recordWindow = new AuctionSalesRecord(itemNo, status, bidderNo, bidderName);
 				}
 				
 				
@@ -205,7 +206,7 @@ public class AuctionReport {
 
 		for (Car car : carsList) {
 			Object[] data = { car.getItemNo(), car.getBrand(), car.getModel(), car.getInspGrade(),
-					car.getStartingPrice(), car.getMinSellPrice(), car.getFinalPrice(), car.getStatus() ,car.getBidderNo()};
+					car.getStartingPrice(), car.getMinSellPrice(), car.getFinalPrice(), car.getStatus(), car.getBidderNo(), car.getBidderName()};
 			model.addRow(data);
 		}
 	}

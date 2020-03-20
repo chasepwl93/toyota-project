@@ -1,8 +1,6 @@
 package gui;
 
 import java.awt.Dimension;
-import java.awt.EventQueue;
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
@@ -123,7 +121,6 @@ public class EditDBCon extends JFrame {
 							"Inane error", JOptionPane.ERROR_MESSAGE);
 					logger.addLog(Level.SEVERE, ex.toString());
 				}
-
 			}
 		});
 		btnUpdate.setBounds(325, 255, 97, 25);

@@ -79,15 +79,13 @@ public class Menu {
 				carController.closeConnection();
 			}
 		});
-		
-		
 
 		// Side bar
 		lblAuctionReport.setHorizontalAlignment(SwingConstants.CENTER);
 
 		panelSidebar.setBackground(new java.awt.Color(23, 35, 51));
-		panelSidebar.setLayout(
-				new MigLayout("", "[200px,grow,left][]", "[100px,fill][30px]10px[30px]10px[30px]30px[40px][40px][40px][grow]"));
+		panelSidebar.setLayout(new MigLayout("", "[200px,grow,left][]",
+				"[100px,fill][30px]10px[30px]10px[30px]30px[40px][40px][40px][grow]"));
 		frame.getContentPane().add(panelSidebar, "flowx,cell 0 0 1 2,alignx left,growy");
 
 		// Car List
@@ -100,7 +98,7 @@ public class Menu {
 				dynamicPanel("CarList");
 			}
 		});
-		
+
 		// Start Auction button
 		btnStartAuction.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -120,10 +118,12 @@ public class Menu {
 		btnRaiseAmount.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				Properties prop = new Properties();
+				
 				String[] choices = { "50,000", "100,000", "150,000", "200,000", "250,000", "300,000" };
 				String input = (String) JOptionPane.showInputDialog(null, "Choose now...", "Raise Amount",
 						JOptionPane.QUESTION_MESSAGE, null, choices // array of choices
 				, choices[0]); // Initial choice
+				
 				if (!(input == null || input.equals(""))) {
 					try (OutputStream output = new FileOutputStream("auction.config")) {
 						prop.setProperty("raise.amount", input.replaceAll(",", ""));
@@ -134,7 +134,8 @@ public class Menu {
 						logger.addLog(Level.SEVERE, "Unable to save raise amount: " + e);
 					}
 				}
-
+				
+				panelController.loadRaiseAmount();
 			}
 		});
 		button.addActionListener(new ActionListener() {
@@ -144,13 +145,13 @@ public class Menu {
 		});
 		button.setForeground(Color.WHITE);
 		button.setBackground(new Color(75, 0, 130));
-		
+
 		panelSidebar.add(button, "cell 0 1,grow");
 		btnRaiseAmount.setForeground(Color.WHITE);
 		btnRaiseAmount.setBackground(new Color(75, 0, 130));
 		panelSidebar.add(btnRaiseAmount, "cell 0 2,grow");
 
-		// Edit DB Con 
+		// Edit DB Con
 		btnEditDBCon.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				EditDBCon editFrame = new EditDBCon();
@@ -207,12 +208,14 @@ public class Menu {
 
 	}
 
+	// reset side JPanel color
 	private void resetColor(JPanel[] pane) {
 		for (int i = 0; i < pane.length; i++) {
 			pane[i].setBackground(new Color(23, 35, 51));
 		}
 	}
 
+	// loads the chosen panel
 	private void dynamicPanel(String choice) {
 		switch (choice) {
 		case ("Register"):
@@ -259,6 +262,7 @@ public class Menu {
 				panelController = new AuctionController();
 			}
 			dynamicPanel = panelController.getPanel();
+			panelController.launchDashboard();
 			layeredPanel.removeAll();
 			layeredPanel.add(dynamicPanel);
 			layeredPanel.repaint();

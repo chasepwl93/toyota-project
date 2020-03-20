@@ -1,8 +1,10 @@
-Mar 15, 2020 1:21:59 PM utils.Log addLog
+Mar 18, 2020 10:44:49 PM utils.Log addLog
 INFO: Menu frame created
-Mar 15, 2020 1:22:00 PM model.RecordsDAO <init>
+Mar 18, 2020 10:44:50 PM model.RecordsDAO <init>
 INFO: Connection to SQLite has been established.
-Mar 15, 2020 1:22:01 PM utils.Log addLog
+Mar 18, 2020 10:44:51 PM utils.Log addLog
 INFO: Live Auction Started
-Mar 15, 2020 1:22:18 PM utils.Log addLog
-INFO: Live Auction Started
+Mar 18, 2020 10:45:05 PM utils.Log addLog
+INFO: Raise Amount changed: 250,000
+Mar 18, 2020 10:45:21 PM utils.Log addLog
+INFO: Raise Amount changed: 50,000

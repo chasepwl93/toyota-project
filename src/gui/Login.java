@@ -152,6 +152,7 @@ public class Login {
 
 	}
 
+	// image scaling by JLabel size
 	private ImageIcon ResizeImage(ImageIcon MyImage, JLabel jLabel) {
 		Image img = MyImage.getImage();
 		Image newImg = img.getScaledInstance(jLabel.getWidth(), jLabel.getHeight(), Image.SCALE_SMOOTH);
@@ -161,10 +162,9 @@ public class Login {
 
 	private Boolean verifyCredentials() {
 		String line = new String();
-		
-		try {
-			FileReader filereader = new FileReader(new File("system-users.config"));
-			BufferedReader br = new BufferedReader(filereader);
+
+		try (FileReader filereader = new FileReader(new File("system-users.config"));
+				BufferedReader br = new BufferedReader(filereader);) {
 
 			String passText = new String(fieldPassword.getPassword());
 
@@ -185,7 +185,6 @@ public class Login {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-
 		return false;
 	}
 }

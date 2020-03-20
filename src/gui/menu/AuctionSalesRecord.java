@@ -23,8 +23,9 @@ public class AuctionSalesRecord extends JFrame {
 	private JTextField fieldBidderNo;
 	private RecordController recordController;
 	private final String newline = "\n";
+	private JTextField textField;
 
-	public AuctionSalesRecord(int itemNo, String status, int bidderNo) {
+	public AuctionSalesRecord(int itemNo, String status, int bidderNo, String bidderName) {
 		setTitle("Bid History");
 		recordController = new RecordController();
 		getContentPane().setBackground(Color.WHITE);
@@ -95,6 +96,19 @@ public class AuctionSalesRecord extends JFrame {
 		fieldTotalBid.setText(Integer.toString(recordList.size()));
 		
 		fieldBidderNo.setText(Integer.toString(bidderNo));
+		
+		JLabel lblBidderName = new JLabel("Last Bidder Name");
+		lblBidderName.setFont(new Font("Verdana", Font.PLAIN, 14));
+		lblBidderName.setBounds(21, 200, 128, 25);
+		getContentPane().add(lblBidderName);
+		
+		textField = new JTextField(bidderName);
+		textField.setHorizontalAlignment(SwingConstants.CENTER);
+		textField.setFont(new Font("Verdana", Font.PLAIN, 15));
+		textField.setEditable(false);
+		textField.setColumns(10);
+		textField.setBounds(22, 231, 128, 31);
+		getContentPane().add(textField);
 		
 		getContentPane().revalidate();
 		getContentPane().repaint();

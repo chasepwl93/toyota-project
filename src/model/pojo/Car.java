@@ -16,26 +16,9 @@ public class Car {
 	private int finalPrice;
 	private String status;
 	private int bidderNo;
+	private String bidderName;
 
 	public Car() {
-	}
-
-	public Car(String imageFile, int itemNo, String brand, String model, int year, String milage, String inspGrade,
-			int startingPrice, int minSellPrice, String sellerInfo, int finalPrice, String status, int bidderNo) {
-		super();
-		this.imageFile = imageFile;
-		this.itemNo = itemNo;
-		this.brand = brand;
-		this.model = model;
-		this.year = year;
-		this.milage = milage;
-		this.inspGrade = inspGrade;
-		this.startingPrice = startingPrice;
-		this.minSellPrice = minSellPrice;
-		this.sellerInfo = sellerInfo;
-		this.finalPrice = finalPrice;
-		this.status = status;
-		this.bidderNo = bidderNo;
 	}
 
 	@Override
@@ -156,6 +139,14 @@ public class Car {
 
 	public void setBidderNo(int bidderNo) {
 		this.bidderNo = bidderNo;
+	}
+
+	public String getBidderName() {
+		return bidderName;
+	}
+
+	public void setBidderName(String bidderName) {
+		this.bidderName = bidderName;
 	}
 
 	

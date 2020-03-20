@@ -63,6 +63,9 @@ public class AuctionController extends JFrame {
 	private JLabel lblStatus2;
 	private JLabel lblStatus3;
 
+	private JButton btnNext;
+	private JButton btnExit;
+
 	/**
 	 * Create the frame.
 	 */
@@ -70,6 +73,7 @@ public class AuctionController extends JFrame {
 		dashboard = new AuctionDashboard();
 		car = carController.getAuctionItem();
 		initialize();
+		loadRaiseAmount();
 
 	}
 
@@ -200,6 +204,8 @@ public class AuctionController extends JFrame {
 				case (3):
 					dashboard.setColorPanelCount(Color.red);
 					checkSold();
+					btnNext.setEnabled(true);
+					btnExit.setEnabled(true);
 					btnCount.setEnabled(false);
 					btnBid.setEnabled(false);
 					break;
@@ -253,50 +259,69 @@ public class AuctionController extends JFrame {
 		JButton btnStart = new JButton("Start");
 		btnStart.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				btnNext.setEnabled(false);
+				btnExit.setEnabled(false);
 				btnCount.setEnabled(true);
 				btnBid.setEnabled(true);
+				btnStart.setEnabled(false);
 				dashboard.setColorPanelCount(Color.green);
 			}
 		});
 		panelNextEnd.add(btnStart, "flowx,cell 0 0");
 
-		JButton btnExit = new JButton("END");
+		btnExit = new JButton("END");
 		btnExit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				dashboard.dispose();
 			}
 		});
 
-		JButton btnNext = new JButton("Next");
+		btnNext = new JButton("Next");
 		btnNext.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				dashboard.showBlackPanel();
+				
+				// loops till user enters a number
+				Boolean catchInvalidNum = false;
+				do {
+					try {
+						String bidderNo = JOptionPane.showInputDialog(null, "Enter Last Bidder No.", "Bidder Info", JOptionPane.QUESTION_MESSAGE);
+						car.setBidderNo(Integer.parseInt(bidderNo));
+						catchInvalidNum = false;
+					} catch (NumberFormatException ex) {
+						catchInvalidNum = true;
+					}
+				} while (catchInvalidNum);
 
-				String response = JOptionPane.showInputDialog(null, "Enter Last Bidder No.", "Bidder Info",
-						JOptionPane.QUESTION_MESSAGE);
-
-				car.setBidderNo(Integer.parseInt(response));
+				// bidder name
+				String bidderName = JOptionPane.showInputDialog(null, "Enter Last Bidder Name", "Bidder Name", JOptionPane.QUESTION_MESSAGE);
+				car.setBidderName(bidderName);
 
 				updateCartoDB();
+				
 				recordController.save(car.getItemNo(), timeStampList);
 
-				emptyTimeList();
+				emptyTimeList(); // empty status
 
-				dashboard.removeImages();
-				car = carController.getAuctionItem();
+				dashboard.removeImages(); // remove image
+				
+				car = carController.getAuctionItem(); // get next auction item
+				
 				if (car != null) {
 					setData();
 					dashboard.showAuctionPanel();
+					btnStart.setEnabled(true);
 					count = 0;
 					lblCount.setText("-");
 					dashboard.setColorPanelCount(Color.black);
 					dashboard.setLblSold("");
 					dashboard.setLblCount("-");
 					dashboard.revalidate();
+					repaint();
 					dashboard.repaint();
 				} else {
-					JOptionPane.showMessageDialog(null, "Reached the end of Auction Item");
 					dashboard.showBlackPanel();
+					JOptionPane.showMessageDialog(null, "Reached the end of Auction Item");
 				}
 
 			}
@@ -308,10 +333,20 @@ public class AuctionController extends JFrame {
 			setData();
 		} else {
 			dashboard.showBlackPanel();
+			JOptionPane.showMessageDialog(null, "No auction item to load. Register some cars.");
 		}
 
 	}
 
+	// launches a new dashboard only if it is closed
+	public void launchDashboard() {
+		if (dashboard.isWindowClosed()) {
+			dashboard = new AuctionDashboard();
+			setData();
+		}
+	}
+
+	// removes current image panel and sets new image
 	public void setCarImage(String imagePath) {
 
 		if (panelCarImg != null) {
@@ -342,6 +377,7 @@ public class AuctionController extends JFrame {
 
 		// set Item No.
 		lblItemNoVal.setText(Integer.toString(car.getItemNo()));
+		dashboard.setLblItemNo(Integer.toString(car.getItemNo()));
 
 		// set Brand
 		dashboard.setLblBrandVal(car.getBrand());
@@ -369,25 +405,22 @@ public class AuctionController extends JFrame {
 
 	}
 
-	private int loadRaiseAmount() {
+	public void loadRaiseAmount() {
 		try (InputStream input = new FileInputStream("auction.config")) {
-			// getClass().getResource("dbconfig.properties")
 			prop = new Properties();
 
-			// load a properties file
 			prop.load(input);
 
-			return Integer.parseInt(prop.getProperty("raise.amount"));
+			raiseAmount = Integer.parseInt(prop.getProperty("raise.amount"));
 
 		} catch (IOException ex) {
 			ex.printStackTrace();
-			return 0;
 		}
 
 	}
 
+	// returns loadRaiseAmount
 	private int IncreasePrice() {
-		raiseAmount = loadRaiseAmount();
 
 		currentAmount = raiseAmount + currentAmount;
 

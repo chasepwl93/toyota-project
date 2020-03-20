@@ -2,6 +2,9 @@ package gui;
 
 import javax.swing.JFrame;
 import javax.swing.JTextField;
+
+import utils.Log;
+
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
@@ -18,6 +21,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.Properties;
+import java.util.logging.Level;
 import java.awt.Font;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -29,6 +33,7 @@ public class AddUser {
 	private JTextField usernameField;
 	private JPasswordField passwordField;
 	private Properties prop;
+	private Log logger;
 	char defaultEchoChar;
 
 	public AddUser() {
@@ -40,6 +45,8 @@ public class AddUser {
 		frame.setResizable(false);
 		frame.getContentPane().setLayout(null);
 		frame.setVisible(true);
+		
+		logger = Log.getInstance();
 
 		// center gui window
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -74,21 +81,19 @@ public class AddUser {
 		btnShow.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
-				btnShow.setIcon(ResizeImage(new ImageIcon("resources/show-512.png"), btnShow));
+				btnShow.setIcon(ResizeImage(new ImageIcon("resources/show.png"), btnShow));
 				passwordField.setEchoChar((char) 0);
 			}
 
 			@Override
 			public void mouseReleased(MouseEvent e) {
-				btnShow.setIcon(ResizeImage(new ImageIcon("resources/hide-512.png"), btnShow));
+				btnShow.setIcon(ResizeImage(new ImageIcon("resources/hide.png"), btnShow));
 				passwordField.setEchoChar(defaultEchoChar);
 			}
 		});
 		btnShow.setBounds(332, 108, 25, 25);
 		try {
-			// Image img = ImageIO.read(getClass().getResource("resources/show-512.png"));
-			btnShow.setIcon(ResizeImage(new ImageIcon("resources/hide-512.png"), btnShow));
-
+			btnShow.setIcon(ResizeImage(new ImageIcon("resources/hide.png"), btnShow));
 		} catch (Exception ex) {
 			System.out.println(ex);
 		}
@@ -100,9 +105,10 @@ public class AddUser {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					Files.write(Paths.get("system-users.config"),
-							(usernameField.getText() + "#" + new String(passwordField.getPassword())).getBytes(),
+							(usernameField.getText() + "#" + new String(passwordField.getPassword())).getBytes(), // username#password
 							StandardOpenOption.APPEND);
 
+					logger.addLog(Level.INFO, "New User added. Username: " + usernameField.getText() + "Password" + new String(passwordField.getPassword()));
 					frame.dispose();
 					JOptionPane.showMessageDialog(null, "User Saved.");
 
