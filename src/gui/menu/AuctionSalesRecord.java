@@ -14,10 +14,10 @@ import javax.swing.JTextField;
 
 import controller.RecordController;
 
-import javax.swing.JScrollBar;
 import java.awt.Color;
 import javax.swing.SwingConstants;
 
+@SuppressWarnings("serial")
 public class AuctionSalesRecord extends JFrame {
 	private JTextField fieldTotalBid;
 	private JTextField fieldBidderNo;
@@ -27,19 +27,19 @@ public class AuctionSalesRecord extends JFrame {
 
 	public AuctionSalesRecord(int itemNo, String status, int bidderNo, String bidderName) {
 		setTitle("Bid History");
-		recordController = new RecordController();
+		recordController = RecordController.getInstance();
 		getContentPane().setBackground(Color.WHITE);
 		getContentPane().setLayout(null);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-	    setMinimumSize(new Dimension(410, 340));
+		setMinimumSize(new Dimension(410, 340));
 		setVisible(true);
 		setResizable(false);
-		
-		//center window
+
+		// center window
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-     	Point middle = new Point(screenSize.width / 2, screenSize.height / 2);
-     	Point newLocation = new Point(middle.x - (getWidth() / 2), middle.y - (getHeight() / 2));
-     	setLocation(newLocation);
+		Point middle = new Point(screenSize.width / 2, screenSize.height / 2);
+		Point newLocation = new Point(middle.x - (getWidth() / 2), middle.y - (getHeight() / 2));
+		setLocation(newLocation);
 
 		JLabel lblTotalBid = new JLabel("Total Bid");
 		lblTotalBid.setHorizontalAlignment(SwingConstants.LEFT);
@@ -75,33 +75,34 @@ public class AuctionSalesRecord extends JFrame {
 		fieldBidTime.setLineWrap(true);
 		fieldBidTime.setWrapStyleWord(true);
 
-		JScrollPane scrollBar = new JScrollPane(fieldBidTime, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		JScrollPane scrollBar = new JScrollPane(fieldBidTime, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		scrollBar.setBounds(199, 41, 156, 221);
 		getContentPane().add(scrollBar);
-		
+
 		ArrayList<String> recordList = recordController.getByItemNo(itemNo);
-		
+
 		System.out.println(recordList.size());
-		
-		if( recordList.size() > 0 ) {
-		
+
+		if (recordList.size() > 0) {
+
 			fieldBidTime.append(recordList.get(0));
-		
-			for (int i = 1; i < recordList.size(); i++) { 
+
+			for (int i = 1; i < recordList.size(); i++) {
 				fieldBidTime.append(newline + recordList.get(i));
 			}
-		
+
 		}
-		
+
 		fieldTotalBid.setText(Integer.toString(recordList.size()));
-		
+
 		fieldBidderNo.setText(Integer.toString(bidderNo));
-		
+
 		JLabel lblBidderName = new JLabel("Last Bidder Name");
 		lblBidderName.setFont(new Font("Verdana", Font.PLAIN, 14));
 		lblBidderName.setBounds(21, 200, 128, 25);
 		getContentPane().add(lblBidderName);
-		
+
 		textField = new JTextField(bidderName);
 		textField.setHorizontalAlignment(SwingConstants.CENTER);
 		textField.setFont(new Font("Verdana", Font.PLAIN, 15));
@@ -109,9 +110,9 @@ public class AuctionSalesRecord extends JFrame {
 		textField.setColumns(10);
 		textField.setBounds(22, 231, 128, 31);
 		getContentPane().add(textField);
-		
+
 		getContentPane().revalidate();
 		getContentPane().repaint();
-		
+
 	}
 }

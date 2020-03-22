@@ -6,7 +6,6 @@ import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import java.awt.GridBagLayout;
 import java.awt.HeadlessException;
 import java.awt.Image;
 
@@ -15,23 +14,16 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.Border;
 
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
 import java.awt.Point;
 import java.awt.Toolkit;
 
-import net.miginfocom.swing.MigLayout;
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.awt.event.ActionEvent;
@@ -127,7 +119,7 @@ public class Login {
 		btnOK.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (verifyCredentials()) {
-					Menu menu = new Menu();
+					new Menu();
 					frmLogin.dispose();
 				} else {
 					JOptionPane.showMessageDialog(null, "Wrong username or Password.", "Invalid",
@@ -170,11 +162,7 @@ public class Login {
 
 			while ((line = br.readLine()) != null) {
 
-				// Split line by a # character
-				// split[0] <- username
-				// split[1] <- password
-
-				String[] split = line.split("#");
+				String[] split = line.split("#"); // split by # character [username#password]
 
 				if ((fieldUsername.getText().equals(split[0]) && ((passText.equals(split[1]))))) {
 					return true;

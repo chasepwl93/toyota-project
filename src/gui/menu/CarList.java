@@ -37,6 +37,8 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.event.ActionEvent;
 
 import java.awt.event.WindowAdapter;
@@ -70,7 +72,6 @@ public class CarList {
 		return panelCarList;
 	}
 
-	@SuppressWarnings("serial")
 	public void initialize() {
 
 		JPanel panelTop = new JPanel();
@@ -104,7 +105,7 @@ public class CarList {
 		panelTop.add(btnRefresh, "cell 0 0,aligny center");
 		JButton btnDelete = new JButton("Delete");
 		btnDelete.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {				
+			public void actionPerformed(ActionEvent e) {
 				// i = the index of the selected row
 				int i = tableCar.getSelectedRow();
 
@@ -114,7 +115,6 @@ public class CarList {
 					carController.deleteCarByID(id);
 					refreshTableData();
 				}
-				
 
 			}
 		});
@@ -141,36 +141,36 @@ public class CarList {
 		btnImportCSV.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				JFileChooser file = null;
-				LookAndFeel previousLF = UIManager.getLookAndFeel(); 
+				LookAndFeel previousLF = UIManager.getLookAndFeel();
 				int result = 0;
 				try {
-				 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-				file = new JFileChooser();
-				file.setCurrentDirectory(new File(System.getProperty("user.home")));
-				// filter the files
-				FileNameExtensionFilter filter = new FileNameExtensionFilter("*.Excel", "xlsx", "xls");
-				file.addChoosableFileFilter(filter);
-				result = file.showSaveDialog(null);
-				 UIManager.setLookAndFeel(previousLF);
-			    } catch (Exception exp) {}
-				
+					UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+					file = new JFileChooser();
+					file.setCurrentDirectory(new File(System.getProperty("user.home")));
+					// filter the files
+					FileNameExtensionFilter filter = new FileNameExtensionFilter("*.Excel", "xlsx", "xls");
+					file.addChoosableFileFilter(filter);
+					result = file.showSaveDialog(null);
+					UIManager.setLookAndFeel(previousLF);
+				} catch (Exception exp) {
+				}
+
 				// if the user click on save in Jfilechooser
 				if (result == JFileChooser.APPROVE_OPTION) {
-					
+
 					File selectedFile = file.getSelectedFile();
 					String sourcePath = selectedFile.getAbsolutePath();
 					System.out.println(sourcePath);
 					carController.importExcel(sourcePath);
-					
+
 					refreshTableData();
-									
-					
+
 				}
 				// if the user click on cancel in Jfilechooser
 				else if (result == JFileChooser.CANCEL_OPTION) {
 					System.out.println("No File Select");
 				}
-				
+
 			}
 		});
 		panelTop.add(btnImportCSV, "cell 0 0");
@@ -208,7 +208,6 @@ public class CarList {
 		// hide column
 		TableColumnModel tcm = tableCar.getColumnModel();
 		tcm.removeColumn(tcm.getColumn(0)); // hide id
-		// tcm.removeColumn(tcm.getColumn(0)); // hide profile image
 
 		refreshTableData();
 
@@ -226,9 +225,8 @@ public class CarList {
 	}
 
 	public void refreshTableData() {
-		
+
 		ArrayList<Car> carsList = carController.getAllCars();
-		
 
 		model.setRowCount(0);
 
@@ -241,20 +239,13 @@ public class CarList {
 
 	private void editCarPopup(String id) {
 
-		JFrame detailsFrame = new JFrame();
+		final JFrame detailsFrame = new JFrame();
 		JPanel panelCarDetail = new JPanel();
 
-		detailsFrame = new JFrame();
 		detailsFrame.setResizable(false);
 		detailsFrame.setBounds(100, 100, 945, 717);
 		detailsFrame.setVisible(true);
 		detailsFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-
-		detailsFrame.addWindowListener(new WindowAdapter() {
-			public void windowClosing(WindowEvent we) {
-				refreshTableData();
-			}
-		});
 
 		// center gui window
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -268,16 +259,23 @@ public class CarList {
 		register.setForUpdate(id);
 
 		panelCarDetail = register.getPanel();
+		
+		register.btnSave.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				detailsFrame.dispose();
+				refreshTableData();
+			}
+		});
 
 		detailsFrame.getContentPane().add(panelCarDetail);
 		detailsFrame.getContentPane().setLayout(new MigLayout("insets 0", "[grow,fill]", "[grow,fill]"));
 	}
-	
+
 	private void filter(String query, int column) {
 		sorter = new TableRowSorter<>(model);
 		tableCar.setRowSorter(sorter);
-		sorter.setRowFilter(RowFilter.regexFilter("(?i)"+query, column));
+		sorter.setRowFilter(RowFilter.regexFilter("(?i)" + query, column));
 	}
-	
-	
+
 }

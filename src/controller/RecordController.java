@@ -4,33 +4,38 @@ import java.util.ArrayList;
 import model.RecordsDAO;
 
 public class RecordController {
-	private RecordsDAO dao;
-	
-	public RecordController() {
-		dao = new RecordsDAO();
+	private static RecordsDAO dao;
+	private static RecordController single_instance = null;
+
+	private RecordController() {
 	}
-	
-	public ArrayList<String> getByItemNo(int ItemNo){
-		
-		ArrayList<String> itemList = dao.getByItemNo(ItemNo);
-		
-		return itemList;
+
+	// limit to one instance
+	public static RecordController getInstance() {
+		if (single_instance == null) {
+			dao = new RecordsDAO();
+			single_instance = new RecordController();
+		}
+		return single_instance;
 	}
-	
-	public void save(int ItemNo, ArrayList<String> timeRecords) { 
+
+	public ArrayList<String> getByItemNo(int ItemNo) {
+		return dao.getByItemNo(ItemNo);
+	}
+
+	public void save(int ItemNo, ArrayList<String> timeRecords) {
 		dao.save(ItemNo, timeRecords);
 	}
-	
-	public void ToCSV()  { 
+
+	public void ToCSV() {
 		dao.ToCSV();
 	}
-	
+
 	public void deleteAll() {
 		dao.deleteAll();
 	}
 
 	public void closeConnection() {
 		dao.closeConnection();
-		
 	}
 }

@@ -18,8 +18,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Properties;
-import java.util.logging.FileHandler;
-import java.util.logging.Logger;
+import java.util.logging.Level;
 
 import javax.swing.JOptionPane;
 
@@ -33,13 +32,14 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import model.pojo.Car;
+import utils.Log;
 
 public class CarsDAO {
 
 	private Connection con;
 	private ResultSet resultSet;
 	private Properties prop;
-
+	private Log logger = Log.getInstance();
 	private String tableName;
 
 	public CarsDAO() {
@@ -59,11 +59,11 @@ public class CarsDAO {
 			// get table name
 			tableName = prop.getProperty("tablename.cars");
 
-			System.out.println("Connection to SQLite has been established.");
+			logger.addLog(Level.INFO, "Connection to database established.");
 
 		} catch (IOException | SQLException | ClassNotFoundException ex) {
-			JOptionPane.showMessageDialog(null, "Database Connection Error. Check Properties file for connection.",
-					"Inane error", JOptionPane.ERROR_MESSAGE);
+			logger.addErrorDialog("Database Connection Error", "Error Connecting to database. Check AuctionSales.log for more detail.");
+			logger.addLog(Level.SEVERE, "Error Connecting to Database from CarsDAO. \nError Message: " + ex.toString());
 			ex.printStackTrace();
 		}
 	}
@@ -101,11 +101,12 @@ public class CarsDAO {
 
 				carsList.add(car);
 			}
-
+			logger.addLog(Level.INFO, "Successfully fetched all car items from database");
 		} catch (SQLException e) {
 			System.err.format("SQL State: %s\n%s", e.getSQLState(), e.getMessage());
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(null, "Error Reading Database.", "Inane error", JOptionPane.ERROR_MESSAGE);
+			logger.addLog(Level.SEVERE, "Error fetching car items from database. \nError Message: " + e.toString());
+			logger.addErrorDialog("Database Error", "Error fetching items from database. Check AuctionSales.log for more detail.");
 		}
 
 		return carsList;
@@ -139,14 +140,17 @@ public class CarsDAO {
 				car.setFinalPrice(resultSet.getInt("final_price"));
 				car.setStatus(resultSet.getString("status"));
 				car.setBidderNo(resultSet.getInt("bidder_no"));
-
+				
+				logger.addLog(Level.INFO, "Successfully fetched car item for with item no: " + car.getItemNo());
+				
 				return car;
 
 			}
 
 		} catch (SQLException e) {
 			System.err.format("SQL State: %s\n%s", e.getSQLState(), e.getMessage());
-			JOptionPane.showMessageDialog(null, "Error Reading Database.", "Inane error", JOptionPane.ERROR_MESSAGE);
+			logger.addLog(Level.SEVERE, "Error fetching car items from database. ID No: " + id + "\nError Message: " + e.toString());
+			logger.addErrorDialog("Database Error", "Error fetching item from database. Check AuctionSales.log for more detail.");
 			return null;
 		}
 
@@ -187,7 +191,8 @@ public class CarsDAO {
 
 		} catch (SQLException ex) {
 			ex.printStackTrace();
-			JOptionPane.showMessageDialog(null, "Error Writing Database.", "Inane error", JOptionPane.ERROR_MESSAGE);
+			logger.addLog(Level.SEVERE, "Error saving/updating car. Item No: " + car.getItemNo() + "\nError Message: " + ex.toString());
+			logger.addErrorDialog("Database Error", "Error saving car. Check AuctionSales.log for more detail.");
 			return false;
 		}
 
@@ -224,21 +229,18 @@ public class CarsDAO {
 				car.setFinalPrice(0);
 				car.setStatus("");
 				car.setBidderNo(0);
-
-				// row = sheet.getRow(i);
-				// String col2 = row.getCell(1).getStringCellValue();
+				car.setBidderName("");
 
 				updateOrSave(car);
-				System.out.println("Import rows " + i);
-
 			}
-
 			wb.close();
 			input.close();
+			
+			logger.addLog(Level.INFO, "Successfully imported excel to database");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			JOptionPane.showMessageDialog(null, "Error Importing Excel.", "Inane error", JOptionPane.ERROR_MESSAGE);
-			LogError(e);
+			logger.addLog(Level.SEVERE, "Error while importing CSV. \nError Message: " + e.toString());
+			logger.addErrorDialog("Error", "Error while importing CSV. Check AuctionSales.log for more detail.");
 			e.printStackTrace();
 		}
 	}
@@ -288,14 +290,14 @@ public class CarsDAO {
 
 			int confirm = preparedStatement.executeUpdate();
 
-			// rows affected
-			System.out.println("Deleted? : " + confirm);
-
+			System.out.println("Deleted? : " + confirm); // ROWS EFFECTED
+			logger.addLog(Level.INFO, "Car successfully deleted car with id" + id);
 			return true;
 
 		} catch (SQLException e) {
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(null, "Error Deleting Item.", "Inane error", JOptionPane.ERROR_MESSAGE);
+			logger.addLog(Level.SEVERE, "Error deleting car by ID. \nError Message: " + e.toString());
+			logger.addErrorDialog("Database Error", "Error deleting car. Check AuctionSales.log for more detail.");
 			return false;
 		}
 
@@ -304,10 +306,12 @@ public class CarsDAO {
 	public void closeConnection() {
 		try {
 			System.out.println("Connection to sqlite cars db closing.");
+			logger.addLog(Level.INFO, "Connection to sqlite cars db closing.");
 			con.close();
 		}
 
 		catch (SQLException e) {
+			logger.addLog(Level.SEVERE, "Error closing database. \nError Message: " + e.toString());
 			e.printStackTrace();
 		}
 	}
@@ -319,19 +323,18 @@ public class CarsDAO {
 		int formattedNum = 0;
 
 		Boolean isNumberValid = false;
-
+		
+		// do while loops until the user inputs a valid integer format that replaces 
+		// an invalid value while reading from excel.
 		do {
 			try {
-
 				double d = str.isEmpty() ? 0.0 : Double.parseDouble(str);
-
 				formattedNum = (int) d;
-
 				isNumberValid = false;
 			} catch (NumberFormatException e) {
 				isNumberValid = true;
 				str = JOptionPane.showInputDialog(null,
-						"Invalid input for column " + columnName + " at Item No: " + rowItemNo,
+						"Invalid input for column " + columnName + " at item No: " + rowItemNo,
 						"Enter a valid number...", JOptionPane.QUESTION_MESSAGE);
 
 			}
@@ -365,13 +368,17 @@ public class CarsDAO {
 				car.setStatus(resultSet.getString("status"));
 				car.setBidderNo(resultSet.getInt("bidder_no"));
 
+				logger.addLog(Level.INFO, "Getting next auction Item");
+				
 				return car;
+				
 			}
 
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(null, "Error Reading Database.", "Inane error", JOptionPane.ERROR_MESSAGE);
+			logger.addLog(Level.SEVERE, "Error getting next auction item. \nError Message: " + e.toString());
+			logger.addErrorDialog("Database Error", "Error getting next auction item. Check AuctionSales.log for more detail.");
 		}
 		return null;
 	}
@@ -412,47 +419,30 @@ public class CarsDAO {
 			csvPrinter.close();
 
 			JOptionPane.showMessageDialog(null, "Data Exported Successfully.");
+			logger.addLog(Level.INFO, "Car table exported to csv.");
 
 		} catch (IOException | SQLException e) {
-
-			// Message stating export unsuccessful.
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(null, "Unable to Export CSV.", "Inane error", JOptionPane.ERROR_MESSAGE);
+			logger.addLog(Level.SEVERE, "Error Exporting Car Data. \nError Message: " + e.toString());
+			logger.addErrorDialog("Database Error", "Error Exporting Car Data. Check AuctionSales.log for more detail.");
 
 		}
 	}
-
-	private void LogError(Exception ex) {
-		Logger logger = Logger.getLogger(CarsDAO.class.getName());
-
-		// Create an instance of FileHandler that write log to a file called
-		// app.log. Each new message will be appended at the at of the log file.
-		FileHandler fileHandler;
-		try {
-			fileHandler = new FileHandler("error.log", true);
-
-			logger.addHandler(fileHandler);
-
-			logger.severe(ex.toString());
-
-		} catch (SecurityException | IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-	}
-
+	
 	public void deleteAll() {
 
 		String query = "DELETE FROM " + tableName;
 		try {
 			Statement stmt = con.createStatement();
-			stmt.executeUpdate(query); // execute query
+			stmt.executeUpdate(query);
+			logger.addLog(Level.INFO, "Successfully deleted all car data.");
 		} catch (Exception e) {
 			e.printStackTrace();
+			logger.addLog(Level.SEVERE, "Error Deleting Car Data. \nError Message: " + e.toString());
+			logger.addErrorDialog("Database Error", "Error Deleting Car Data. Check AuctionSales.log for more detail.");
 		}
 
-		query = " UPDATE SQLITE_SEQUENCE SET SEQ=0 WHERE NAME='" + tableName + "';";
+		query = "UPDATE SQLITE_SEQUENCE SET SEQ=0 WHERE NAME='" + tableName + "';";
 		try {
 			Statement stmt = con.createStatement();
 			stmt.executeUpdate(query); // execute query

@@ -17,30 +17,22 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Properties;
-import java.util.logging.FileHandler;
 import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
-
-import javax.swing.JOptionPane;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.csv.QuoteMode;
 
-import model.pojo.Record;
+import utils.Log;
 
 public class RecordsDAO {
 
 	private Connection con;
-	private PreparedStatement preparedStatement;
 	private ResultSet resultSet;
 	private Properties prop;
-	private FileHandler fh; 
+	private Log logger = Log.getInstance();
 
 	private String tableName;
-	
-	private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME); 
 	
 	public RecordsDAO() {
 		try (InputStream input = new FileInputStream("dbconfig.properties")) {
@@ -59,13 +51,13 @@ public class RecordsDAO {
 			// get table name
 			tableName = prop.getProperty("tablename.records");
 
-			LOGGER.log(Level.INFO, "Connection to SQLite has been established."); 
+			logger.addLog(Level.INFO, "Connection to SQLite has been established."); 
 			System.out.println("Connection to SQLite has been established.");
 
 		} catch (IOException | SQLException | ClassNotFoundException e) {
-			JOptionPane.showMessageDialog(null, "Database Connection Error. Check AuctionSales.log for connection.",
-					"Inane error", JOptionPane.ERROR_MESSAGE);
-			LOGGER.log(Level.SEVERE, e.toString()); 
+			logger.addErrorDialog("Database Connection Error.", "Connection Error for Records. Check AuctionSales.log for more detail.");
+			logger.addLog(Level.SEVERE, "Error Calling RecordsDAO constructor" + e.toString()); 
+			e.printStackTrace();
 		}
 	}
 	
@@ -83,10 +75,11 @@ public class RecordsDAO {
 			preparedStmt.executeUpdate();
 			}
 			
+		logger.addLog(Level.INFO, "Auction Time records saved for item no. " + ItemNo);	
 		} catch (SQLException e) {
-			JOptionPane.showMessageDialog(null, "Unable to Save Data",
-					"Inane error", JOptionPane.ERROR_MESSAGE);
-			LOGGER.log(Level.SEVERE, e.toString()); 
+			logger.addLog(Level.SEVERE, "Error saving records in RecordsDAO" + e.toString()); 
+			logger.addErrorDialog("Database Error", "Error saving records. Check AuctionSystem.log for more detail.");
+			e.printStackTrace();
 		}
 	}
 	
@@ -103,8 +96,12 @@ public class RecordsDAO {
 				recordTime.add(resultSet.getString("time_record"));
 			}
 			
+			logger.addLog(Level.INFO, "Auction record time requested for item no: " + ItemNo);
+			
 		} catch (SQLException e) {
 			System.err.format("SQL State: %s\n%s", e.getSQLState(), e.getMessage());
+			logger.addLog(Level.SEVERE, "Error getting item by no. " + e.toString());
+			logger.addErrorDialog("Database Error", "Error getting item by item no. Check AuctionSystem.log for more detail.");
 			return recordTime;
 		}
 		
@@ -144,13 +141,13 @@ public class RecordsDAO {
 		            csvPrinter.flush();
 		            csvPrinter.close();
 		            
+		            logger.addLog(Level.SEVERE, "Records table data successfully exported.");
+		            
 		        } catch (IOException | SQLException e) {
-
-		            // Message stating export unsuccessful.
+		        	logger.addLog(Level.SEVERE, "Error exporting to CSV. " + e.toString());
+		        	logger.addErrorDialog("Database Error", "Error exporting to CSV. Check AuctionSystem.log for more detail.");
 		            e.printStackTrace();
-
 		        } 
-		
 	}
 	
 	public void deleteAll() {
@@ -159,8 +156,11 @@ public class RecordsDAO {
 		try {
 			Statement stmt = con.createStatement();
 			stmt.executeUpdate(query); // execute query
+			logger.addLog(Level.INFO, "All records deleted.");
 		} catch (Exception e) {
 			e.printStackTrace();
+			logger.addLog(Level.SEVERE, "Error deleting in RecordsDAO: " + e.toString());
+			logger.addErrorDialog("Database Error", "Error Deleting data. Check AuctionSystem.log for more detail.");
 		}
 		
 		query = " UPDATE SQLITE_SEQUENCE SET SEQ=0 WHERE NAME='"+tableName+"';";
@@ -174,33 +174,16 @@ public class RecordsDAO {
 
 	public void closeConnection() {
 		try {
-			System.out.println("Connection to sqlite recordsDB closing.");
+			logger.addLog(Level.INFO, "Connection to sqlite recordsDB closing.");
 			con.close();
 		}
 
 		catch (SQLException e) {
 			e.printStackTrace();
+			logger.addErrorDialog("Database Error", "Unable to close database.");
 		}
 	}
 	
-	private void addLogger() { 
-		// This block configure the logger with handler and formatter  
-        try {
-			fh = new FileHandler("C:\\Users\\William\\eclipse-workspace\\ToyotaProject\\AuctionSales.log");
-		} catch (SecurityException | IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}  
-        LOGGER.addHandler(fh);
-        LOGGER.setUseParentHandlers(false);
-        SimpleFormatter formatter = new SimpleFormatter();  
-        fh.setFormatter(formatter);  
-		
-	}
-	
-	private void writeFile() {
-		
-	}
 	
 	
 }

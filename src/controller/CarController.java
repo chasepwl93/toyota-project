@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import model.CarsDAO;
 import model.pojo.Car;
-import utils.Log;
 
 public class CarController {
 
@@ -14,6 +13,7 @@ public class CarController {
 	private CarController() {
 	}
 
+	// limit to one instance
 	public static CarController getInstance() {
 		if (single_instance == null) {
 			dao = new CarsDAO();
@@ -23,18 +23,14 @@ public class CarController {
 	}
 
 	public ArrayList<Car> getAllCars() {
-
 		return dao.getAllItems();
 	}
 
 	public void updateOrSaveCar(Car car) {
-
 		dao.updateOrSave(car);
-
 	}
 
 	public Car getCarbyID(String id) {
-
 		return dao.getItembyId(id);
 	}
 
@@ -44,7 +40,6 @@ public class CarController {
 
 	public void closeConnection() {
 		dao.closeConnection();
-
 	}
 
 	public void importExcel(String filePath) {

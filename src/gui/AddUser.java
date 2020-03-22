@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.util.Properties;
 import java.util.logging.Level;
 import java.awt.Font;
 import java.awt.event.ActionListener;
@@ -32,7 +31,6 @@ public class AddUser {
 	private JFrame frame;
 	private JTextField usernameField;
 	private JPasswordField passwordField;
-	private Properties prop;
 	private Log logger;
 	char defaultEchoChar;
 
@@ -45,7 +43,7 @@ public class AddUser {
 		frame.setResizable(false);
 		frame.getContentPane().setLayout(null);
 		frame.setVisible(true);
-		
+
 		logger = Log.getInstance();
 
 		// center gui window
@@ -105,10 +103,11 @@ public class AddUser {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					Files.write(Paths.get("system-users.config"),
-							(usernameField.getText() + "#" + new String(passwordField.getPassword())).getBytes(), // username#password
+							("\n" + usernameField.getText() + "#" + new String(passwordField.getPassword())).getBytes(), // appends username#password to system-users.config file
 							StandardOpenOption.APPEND);
 
-					logger.addLog(Level.INFO, "New User added. Username: " + usernameField.getText() + "Password" + new String(passwordField.getPassword()));
+					logger.addLog(Level.INFO, "New User added. Username: " + usernameField.getText() + "Password"
+							+ new String(passwordField.getPassword()));
 					frame.dispose();
 					JOptionPane.showMessageDialog(null, "User Saved.");
 

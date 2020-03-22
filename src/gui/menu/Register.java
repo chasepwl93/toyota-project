@@ -1,7 +1,6 @@
 package gui.menu;
 
 import javax.imageio.ImageIO;
-import javax.print.attribute.AttributeSet;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
@@ -13,6 +12,7 @@ import javax.swing.JTextField;
 import javax.swing.LookAndFeel;
 
 import net.miginfocom.swing.MigLayout;
+import utils.Log;
 import utils.ResizeImage;
 
 import java.awt.Color;
@@ -20,14 +20,10 @@ import java.awt.Dimension;
 import java.awt.Font;
 import javax.swing.UIManager;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.DocumentFilter;
-import javax.swing.text.PlainDocument;
 
 import org.apache.commons.io.FileUtils;
 
 import controller.CarController;
-import gui.Menu;
 import model.pojo.Car;
 
 import javax.swing.SwingConstants;
@@ -37,11 +33,18 @@ import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.net.URISyntaxException;
+import java.util.logging.Level;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+/**
+ * 
+ * This class is used by Menu gui's card layout to get panel to register new car
+ * items. Also used by CarList class to edit the info of the chosen car item
+ * from the table
+ *
+ */
 public class Register {
 
 	// Variables declaration - do not modify
@@ -62,8 +65,10 @@ public class Register {
 	private JLabel lblYearError;
 	private JLabel lblStartingPError;
 	private JLabel lblMSPError;
-
+	private Log logger = Log.getInstance();
+	private Boolean SetUpdate = false;
 	private Boolean updateImgFlag = false;
+	public JButton btnSave;
 
 	private File selectedFile;
 	private String imageSourcePath;
@@ -213,7 +218,8 @@ public class Register {
 		panelRegister.add(btnUpload, "cell 1 15,alignx right,gapright 30");
 		panelRegister.add(lblSellerInfo, "cell 0 16");
 		panelRegister.add(scroll, "cell 0 17, grow");
-		JButton btnSave = new JButton("Save");
+		btnSave = new JButton("Save");
+		
 		btnSave.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
@@ -238,10 +244,11 @@ public class Register {
 					carController.updateOrSaveCar(car);
 
 					clearAllFields();
-					
+
 					car = new Car();
 
 					JOptionPane.showMessageDialog(null, "Item saved.");
+					
 				} catch (NumberFormatException numErr) {
 					JOptionPane.showMessageDialog(null,
 							"Error Saving Car. Please recheck if all data is input correctly.", "Inane error",
@@ -272,6 +279,7 @@ public class Register {
 		lblMSPError.setForeground(Color.RED);
 		panelRegister.add(lblMSPError, "cell 0 14,growx");
 
+		logger.addLog(Level.INFO, "Register panel constructed");
 	}
 
 	public void clearAllFields() {
@@ -291,13 +299,12 @@ public class Register {
 		panelRegister.revalidate();
 		panelRegister.repaint();
 
-		
 	}
 
 	public void setForUpdate(String id) {
 
 		Car car = carController.getCarbyID(id);
-
+		
 		this.car = car;
 
 		fieldItemNo.setText(Integer.toString(car.getItemNo()));
@@ -311,8 +318,10 @@ public class Register {
 		fieldSellerInfo.setText(car.getSellerInfo());
 
 		imageSourcePath = "images\\" + car.getImageFile();
-
+		
 		setImagePanel();
+		
+		SetUpdate = true;
 
 	}
 
@@ -341,13 +350,14 @@ public class Register {
 
 	}
 
+	// copies Jfilechooser image to destination /image folder
 	private void copyImageToDest() {
 
 		// if image from jFileChoose is not null
 		if (imageSourcePath != null) {
 			// parse file
 			File source = new File(imageSourcePath);
-			
+
 			// get image name
 			imgName = source.getName();
 			// path to image file
@@ -360,27 +370,29 @@ public class Register {
 			if (fileOld.exists()) {
 				File deleteOld = new File("images\\" + car.getImageFile());
 				System.out.println("Deleting image: " + "images\\" + car.getImageFile());
+				logger.addLog(Level.SEVERE, "Found old image file. Deleting image: " + "images\\" + car.getImageFile());
 				deleteOld.delete();
 			}
 
 			car.setImageFile(imgName);
 
-			System.out.println("Saved Image File: " + car.getImageFile());
-
 			try {
 				FileUtils.copyFile(source, new File("images\\" + imgName));
+				System.out.println("Saved Image File: " + car.getImageFile());
+				logger.addLog(Level.INFO, "Saved Image File" + car.getImageFile());
 			} catch (IOException e) {
 				e.printStackTrace();
+				logger.addLog(Level.INFO, "");
 			}
 		}
 	}
 
+	// verifies the textfields only accept numbers. else error label is shown
 	private void checkIntInput(KeyEvent ke, JTextField tf, JLabel lblError) {
 		if (tf.getText().matches("^[0-9]*$")) {
 			lblError.setText("");
 		} else {
 			lblError.setText("Input values between 0 - 9");
-
 		}
 	}
 

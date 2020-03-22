@@ -54,6 +54,7 @@ public class EditDBCon extends JFrame {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
+		setVisible(true);
 
 		// center gui window
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -113,7 +114,7 @@ public class EditDBCon extends JFrame {
 					// save properties to project root folder
 					prop.store(output, null);
 
-					logger.addLog(Level.INFO, "Database config changed" + prop);
+					logger.addLog(Level.INFO, "Database config changed: " + prop);
 					dispose();
 				} catch (IOException ex) {
 					ex.printStackTrace();

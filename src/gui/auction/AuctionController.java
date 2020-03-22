@@ -7,6 +7,7 @@ import javax.swing.border.EmptyBorder;
 import controller.*;
 import model.pojo.Car;
 import net.miginfocom.swing.MigLayout;
+import utils.Log;
 import utils.ResizeImage;
 
 import javax.swing.JLabel;
@@ -33,8 +34,10 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Properties;
+import java.util.logging.Level;
 import java.awt.event.ActionEvent;
 
+@SuppressWarnings("serial")
 public class AuctionController extends JFrame {
 
 	private JPanel panelController;
@@ -42,12 +45,12 @@ public class AuctionController extends JFrame {
 	private Integer count = 0;
 	private int newCurrPrice = 0;
 	private CarController carController = CarController.getInstance();
-	private RecordController recordController = new RecordController();
-
+	private RecordController recordController = RecordController.getInstance();
+	private ArrayList<String> timeStampList = new ArrayList<>();
+	private Log logger = Log.getInstance();
 	private Properties prop;
 	private Car car;
-	private ArrayList<String> timeStampList = new ArrayList<>();
-
+	
 	private JPanel panelCarImg;
 	private JLabel lblCount;
 
@@ -92,40 +95,31 @@ public class AuctionController extends JFrame {
 				"[:20%:20%,grow,fill]20[:30%:30%,grow]20[25%,grow]20[25%,grow]",
 				"[:10%:10%,grow,fill]20[:30%:30%,grow,fill]20[30%:30%:30%,grow,fill]20[15%,grow,fill]20[15%,grow,fill]"));
 
+		// resize font
 		getContentPane().addComponentListener(new ComponentListener() {
 
 			@Override
 			public void componentResized(ComponentEvent e) {
-				// TODO Auto-generated method stub
 				setFontSize();
-
 			}
 
 			@Override
-			public void componentMoved(ComponentEvent e) {
-				// TODO Auto-generated method stub
-
-			}
+			public void componentMoved(ComponentEvent e) {}
 
 			@Override
 			public void componentShown(ComponentEvent e) {
 				setFontSize();
-
 			}
 
 			@Override
-			public void componentHidden(ComponentEvent e) {
-				// TODO Auto-generated method stub
-
-			}
+			public void componentHidden(ComponentEvent e) {}
 
 		});
 
 		panelCarImg = new JPanel();
 		panelCarImg.setBackground(Color.WHITE);
-		// panelController.add(imgCar, "flowx,cell 0 0 2 3");
 
-		// Item No. Panel
+		//// Item No. Panel ////
 		JPanel panelItemNo = new JPanel();
 		panelItemNo.setBorder(BorderFactory.createTitledBorder("Item No."));
 		panelItemNo.setBackground(Color.WHITE);
@@ -134,26 +128,27 @@ public class AuctionController extends JFrame {
 		panelItemNo.add(lblItemNoVal, "cell 0 0,grow"); // add to panel
 		panelController.add(panelItemNo, "cell 2 0 2 1,grow"); // add to frame
 
-		// Minimum Selling Price JPanel
+		//// Minimum Selling Price ////
 		JPanel panelMinPrice = new JPanel();
 		panelMinPrice.setBorder(BorderFactory.createTitledBorder("Minimum Selling Price"));
 		panelMinPrice.setBackground(Color.WHITE);
 		panelMinPrice.setLayout(new MigLayout("insets 0", "[grow,center]", "[grow,fill]"));
+		
 		lblMinPriceVal = new JLabel("");
-		// lblMinPriceVal.setFont(new Font("SansSerif", Font.PLAIN, 40));
 		panelMinPrice.add(lblMinPriceVal, "cell 0 0");
 		panelController.add(panelMinPrice, "cell 2 1 2 1,grow");
 
-		// Current Selling Price JPanel
+		//// Current Selling Price ////
 		JPanel panelCurrentPrice = new JPanel();
 		panelCurrentPrice.setBorder(BorderFactory.createTitledBorder("Current Selling Price"));
 		panelCurrentPrice.setBackground(Color.WHITE);
 		panelCurrentPrice.setLayout(new MigLayout("insets 0", "[grow,center]", "[grow,fill]"));
+		
 		lblCurrentPriceVal = new JLabel("");
-		// lblCurrentPriceVal.setFont(new Font("SansSerif", Font.PLAIN, 40));
 		panelCurrentPrice.add(lblCurrentPriceVal, "cell 0 0");
 		panelController.add(panelCurrentPrice, "cell 2 2 2 1,grow");
 
+		//// Status ////
 		JPanel panelStatus = new JPanel();
 		panelStatus.setBorder(BorderFactory.createTitledBorder("Status"));
 		panelStatus.setBackground(Color.WHITE);
@@ -169,6 +164,7 @@ public class AuctionController extends JFrame {
 		lblStatus3 = new JLabel();
 		panelStatus.add(lblStatus3, "cell 0 2");
 
+		//// starting price ////
 		JPanel panelStartingPrice = new JPanel();
 		panelStartingPrice.setBorder(BorderFactory.createTitledBorder("Starting Price"));
 		panelStartingPrice.setBackground(Color.WHITE);
@@ -176,9 +172,9 @@ public class AuctionController extends JFrame {
 		panelStartingPrice.setLayout(new MigLayout("", "[grow,center]", "[grow,fill]"));
 
 		lblStartingPrice = new JLabel("");
-		// lblStartingPrice.setFont(new Font("SansSerif", Font.PLAIN, 20));
 		panelStartingPrice.add(lblStartingPrice, "cell 0 0");
 
+		//// count ////
 		JPanel panelCount = new JPanel();
 		panelCount.setBorder(BorderFactory.createTitledBorder("Count"));
 		panelCount.setBackground(Color.WHITE);
@@ -222,7 +218,8 @@ public class AuctionController extends JFrame {
 		});
 		dashboard.setColorPanelCount(Color.black);
 		panelCount.add(btnCount, "cell 0 1,growx");
-
+		
+		//// Bid ////
 		JPanel panelBidButton = new JPanel();
 		panelBidButton.setBorder(null);
 		panelBidButton.setBackground(Color.WHITE);
@@ -251,6 +248,7 @@ public class AuctionController extends JFrame {
 		btnBid.setBackground(UIManager.getColor("InternalFrame.borderLight"));
 		panelBidButton.add(btnBid, "cell 0 0,grow");
 
+		//// Next - Start - End Buttons ////
 		JPanel panelNextEnd = new JPanel();
 		panelNextEnd.setBackground(Color.WHITE);
 		panelController.add(panelNextEnd, "cell 1 4,growx,aligny center");
@@ -280,33 +278,38 @@ public class AuctionController extends JFrame {
 		btnNext.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				dashboard.showBlackPanel();
-				
+
 				// loops till user enters a number
 				Boolean catchInvalidNum = false;
 				do {
 					try {
-						String bidderNo = JOptionPane.showInputDialog(null, "Enter Last Bidder No.", "Bidder Info", JOptionPane.QUESTION_MESSAGE);
+						String bidderNo = JOptionPane.showInputDialog(null, "Enter Last Bidder No.", "Bidder Info",
+								JOptionPane.QUESTION_MESSAGE);
 						car.setBidderNo(Integer.parseInt(bidderNo));
 						catchInvalidNum = false;
+						logger.addLog(Level.INFO, "Bidder No. " + bidderNo + " set for item No. " + car.getItemNo());
 					} catch (NumberFormatException ex) {
+						logger.addLog(Level.WARNING, "Invalid Number format input for Bidder No.");
 						catchInvalidNum = true;
 					}
 				} while (catchInvalidNum);
 
 				// bidder name
-				String bidderName = JOptionPane.showInputDialog(null, "Enter Last Bidder Name", "Bidder Name", JOptionPane.QUESTION_MESSAGE);
+				String bidderName = JOptionPane.showInputDialog(null, "Enter Last Bidder Name", "Bidder Name",
+						JOptionPane.QUESTION_MESSAGE);
 				car.setBidderName(bidderName);
+				logger.addLog(Level.INFO, "Bidder name" + bidderName + "set for Item No." + car.getItemNo());
 
 				updateCartoDB();
-				
+
 				recordController.save(car.getItemNo(), timeStampList);
 
 				emptyTimeList(); // empty status
 
 				dashboard.removeImages(); // remove image
-				
+
 				car = carController.getAuctionItem(); // get next auction item
-				
+
 				if (car != null) {
 					setData();
 					dashboard.showAuctionPanel();
@@ -333,8 +336,11 @@ public class AuctionController extends JFrame {
 			setData();
 		} else {
 			dashboard.showBlackPanel();
+			logger.addLog(Level.INFO, "Reached end of Auction Item.");
 			JOptionPane.showMessageDialog(null, "No auction item to load. Register some cars.");
 		}
+		
+		logger.addLog(Level.INFO, "Auction Controller Constructed.");
 
 	}
 
@@ -342,6 +348,7 @@ public class AuctionController extends JFrame {
 	public void launchDashboard() {
 		if (dashboard.isWindowClosed()) {
 			dashboard = new AuctionDashboard();
+			logger.addLog(Level.INFO, "Relaunching Auction dashboard.");
 			setData();
 		}
 	}
@@ -367,6 +374,7 @@ public class AuctionController extends JFrame {
 		}
 		panelController.add(panelCarImg, "flowx,cell 0 0 2 3,wmin 10px");
 		panelController.setBackground(Color.white);
+		logger.addLog(Level.INFO, "Car Image set.");
 	}
 
 	private void setData() {
@@ -402,6 +410,8 @@ public class AuctionController extends JFrame {
 
 		// set Minimum Price
 		lblMinPriceVal.setText(formatNumber(car.getMinSellPrice()));
+		
+		logger.addLog(Level.INFO, "Auction item loaded for Item No.:" + car.getItemNo());
 
 	}
 
@@ -412,9 +422,12 @@ public class AuctionController extends JFrame {
 			prop.load(input);
 
 			raiseAmount = Integer.parseInt(prop.getProperty("raise.amount"));
+			
+			logger.addLog(Level.INFO, "Raise Amount changed: " + raiseAmount);
 
 		} catch (IOException ex) {
 			ex.printStackTrace();
+			logger.addLog(Level.SEVERE, "Error caught at changing raise amount: " + ex.toString());
 		}
 
 	}
@@ -435,12 +448,9 @@ public class AuctionController extends JFrame {
 	}
 
 	private void checkSold() {
-
 		if (currentAmount >= car.getMinSellPrice()) {
-
 			dashboard.setSold(true);
 			car.setStatus("Sold");
-
 		} else {
 			dashboard.setSold(false);
 			car.setStatus("Not Sold");
@@ -451,8 +461,9 @@ public class AuctionController extends JFrame {
 	private void updateCartoDB() {
 		System.out.println("Final Price " + newCurrPrice);
 		car.setFinalPrice(newCurrPrice);
-
 		carController.updateOrSaveCar(car);
+		
+		logger.addLog(Level.INFO, "Car with Item No. " + car.getItemNo() +  " successfully saved to database.");
 	}
 
 	private void setTimeStatus() {
@@ -493,6 +504,8 @@ public class AuctionController extends JFrame {
 		lblCurrentPriceVal.setFont(new Font(Font.SANS_SERIF, Font.BOLD, (width + height) / 30));
 		lblCount.setFont(new Font(Font.SANS_SERIF, Font.BOLD, (width + height) / 40));
 		getContentPane().revalidate();
+		
+		logger.addLog(Level.INFO, "Screen Resized. Font Size changed.");
 	}
 
 }

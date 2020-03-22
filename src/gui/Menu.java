@@ -14,6 +14,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 import controller.CarController;
+import controller.RecordController;
 import gui.auction.AuctionController;
 import gui.menu.AuctionReport;
 import gui.menu.CarList;
@@ -77,6 +78,8 @@ public class Menu {
 			public void windowClosing(WindowEvent e) {
 				CarController carController = CarController.getInstance();
 				carController.closeConnection();
+				RecordController recordController = RecordController.getInstance();
+				recordController.closeConnection();
 			}
 		});
 
@@ -140,7 +143,7 @@ public class Menu {
 		});
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				AddUser addUser = new AddUser();
+				new AddUser();
 			}
 		});
 		button.setForeground(Color.WHITE);
@@ -154,8 +157,7 @@ public class Menu {
 		// Edit DB Con
 		btnEditDBCon.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				EditDBCon editFrame = new EditDBCon();
-				editFrame.setVisible(true);
+				new EditDBCon();
 			}
 		});
 		btnEditDBCon.setForeground(Color.WHITE);

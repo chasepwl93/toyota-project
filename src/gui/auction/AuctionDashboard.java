@@ -7,6 +7,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import net.miginfocom.swing.MigLayout;
+import utils.Log;
 import utils.ResizeImage;
 
 import javax.swing.JLabel;
@@ -24,13 +25,19 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.logging.Level;
 import java.awt.CardLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
+/**
+ * Dashboard uses card layout to switch between the dashboard panel and black
+ * panel
+ */
+@SuppressWarnings("serial")
 public class AuctionDashboard extends JDialog {
 
-	private static final long serialVersionUID = 1L;
+	private static Log logger = Log.getInstance();
 	private JPanel panelCarImg = new JPanel();
 	private JPanel panelSoldImg = new JPanel();
 	private JPanel panelSold = new JPanel();
@@ -50,9 +57,6 @@ public class AuctionDashboard extends JDialog {
 	private JLabel lblItemNoVal;
 	private Boolean isWindowClosed = false;
 
-	/**
-	 * Create the frame.
-	 */
 	public AuctionDashboard() {
 		addWindowListener(new WindowAdapter() {
 			@Override
@@ -75,27 +79,20 @@ public class AuctionDashboard extends JDialog {
 
 			@Override
 			public void componentResized(ComponentEvent e) {
-				// TODO Auto-generated method stub
 				setFontSize();
-
 			}
 
 			@Override
 			public void componentMoved(ComponentEvent e) {
-				// TODO Auto-generated method stub
-
 			}
 
 			@Override
 			public void componentShown(ComponentEvent e) {
 				setFontSize();
-
 			}
 
 			@Override
 			public void componentHidden(ComponentEvent e) {
-				// TODO Auto-generated method stub
-
 			}
 
 		});
@@ -119,6 +116,7 @@ public class AuctionDashboard extends JDialog {
 		setVisible(true);
 		setAlwaysOnTop(true);
 
+		//// Starting Price ////
 		JPanel panelStartingPrice = new JPanel();
 		panelStartingPrice.setBackground(Color.WHITE);
 		panelStartingPrice.setBorder(BorderFactory.createTitledBorder(null, "Starting Price", TitledBorder.LEFT,
@@ -129,10 +127,9 @@ public class AuctionDashboard extends JDialog {
 		lblStartingPrice = new JLabel("");
 		lblStartingPrice.setHorizontalAlignment(SwingConstants.CENTER);
 		lblStartingPrice.setBackground(Color.WHITE);
-		// lblStartingPrice.setFont(new Font("SansSerif", Font.PLAIN, 40));
-		// setFontSize(lblStartingPrice);
 		panelStartingPrice.add(lblStartingPrice, "cell 0 0,wmin 10px,grow");
 
+		//// Panel Count ////
 		panelCount = new JPanel();
 		panelCount.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
 		panelCount.setBackground(Color.GREEN);
@@ -140,15 +137,13 @@ public class AuctionDashboard extends JDialog {
 		panelCount.setLayout(new MigLayout("", "[grow,fill]", "[grow,fill]"));
 
 		lblCount = new JLabel("-");
-
 		lblCount.setHorizontalAlignment(SwingConstants.CENTER);
 		lblCount.setForeground(Color.DARK_GRAY);
-		// lblCount.setFont(new Font("Tahoma", Font.PLAIN, 25));
 		panelCount.add(lblCount, "cell 0 0,alignx center,aligny center");
 
+		//// Current Price ////
 		JPanel panelCurrentPrice = new JPanel();
 		panelCurrentPrice.setBackground(Color.WHITE);
-
 		contentPane.add(panelCurrentPrice, "cell 1 1 2 1,grow");
 		panelCurrentPrice.setBorder(BorderFactory.createTitledBorder(null, "Current Price", TitledBorder.LEFT,
 				TitledBorder.TOP, new Font("arial", Font.BOLD, setTitledFontSize()), Color.black));
@@ -157,11 +152,9 @@ public class AuctionDashboard extends JDialog {
 		lblCurrentPrice = new JLabel("");
 		lblCurrentPrice.setBackground(Color.WHITE);
 		lblCurrentPrice.setHorizontalAlignment(SwingConstants.CENTER);
-		// lblCurrentPrice.setFont(new Font("SansSerif", Font.PLAIN, 50));
-
 		panelCurrentPrice.add(lblCurrentPrice, "cell 0 0,wmin 10px,grow");
-//		setFontSize(lblCurrentPrice);
 
+		//// Car Info Section ////
 		JPanel panelCarInfo = new JPanel();
 		panelCarInfo.setBackground(Color.WHITE);
 		panelCarInfo.setBorder(BorderFactory.createTitledBorder(null, "Information", TitledBorder.CENTER,
@@ -229,14 +222,15 @@ public class AuctionDashboard extends JDialog {
 		lblSold.setForeground(Color.BLACK);
 
 		panelSold.add(lblSold, "cell 1 0,wmin 10px,alignx center,aligny center");
+		
+		logger.addLog(Level.INFO, "Auction Dashboard constructed.");
 	}
-	
+
 	public Boolean isWindowClosed() {
 		return isWindowClosed;
 	}
 
 	private void setFontSize() {
-
 		int width = getWidth();
 		int height = getHeight();
 		lblStartingPrice.setFont(new Font(Font.SANS_SERIF, Font.BOLD, (width + height) / 60));
@@ -250,27 +244,30 @@ public class AuctionDashboard extends JDialog {
 		int width = getWidth();
 		int height = getHeight();
 		int fontSize = (width + height) / 130;
-
 		return fontSize;
 	}
 
+	// launches dashboard on second screen if detected, otherwise will appear on top
+	// controller
 	private static void showOnScreen(int screen, JDialog frame) {
 		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
 		GraphicsDevice[] gs = ge.getScreenDevices();
 
 		if (screen > -1 && screen < gs.length) {
 			if (!gs[screen].isFullScreenSupported()) {
-				System.out.println("Full screen mode not supported");
+				logger.addLog(Level.WARNING, "Full Screen mode not supported.");
 
 			} else {
-
+				logger.addLog(Level.INFO, "Dashboard launched in full screen.");
 				gs[screen].setFullScreenWindow(frame);
 			}
 
 		} else if (gs.length > 0) {
-			System.out.println("Second Screen not detected.");
+			// uncomment to launch the first screen at full screen
 			// gs[0].setFullScreenWindow(frame);
+			logger.addLog(Level.WARNING, "Second Screen Not Detected.");
 		} else {
+			logger.addLog(Level.SEVERE, "NO SCREENS FOUND.");
 			throw new RuntimeException("No Screens Found");
 		}
 	}
@@ -281,14 +278,15 @@ public class AuctionDashboard extends JDialog {
 			if (sold == true) {
 				image = ImageIO.read(new File("resources\\Correct.png"));
 				lblSold.setText("Sold");
+				logger.addLog(Level.INFO, lblItemNo.getText() + " item no. sold.");
 			} else {
 				image = ImageIO.read(new File("resources\\Wrong.png"));
 				lblSold.setText("Not Sold");
+				logger.addLog(Level.INFO, lblItemNo.getText() + " item no. not sold.");
 			}
 
 			ResizeImage imgSold = new ResizeImage(image);
 			imgSold.setBackground(Color.WHITE);
-
 			panelSoldImg = imgSold;
 		} catch (Exception exp) {
 			exp.printStackTrace();
@@ -300,10 +298,8 @@ public class AuctionDashboard extends JDialog {
 	public void setCarImage(String imagePath) {
 		try {
 			BufferedImage image = ImageIO.read(new File(imagePath));
-
 			ResizeImage imgCar = new ResizeImage(image);
 			imgCar.setBackground(Color.WHITE);
-
 			panelCarImg = imgCar;
 		} catch (Exception exp) {
 			exp.printStackTrace();
@@ -311,6 +307,8 @@ public class AuctionDashboard extends JDialog {
 		}
 		contentPane.add(panelCarImg, "cell 0 0 1 2,wmin 10px");
 	}
+
+	//////////////////////////////////////////////////////// Exposes Component to Set Data //////////////////////////////////////////////////////// 
 
 	public void setColorPanelCount(Color color) {
 		panelCount.setBackground(color);
@@ -352,11 +350,12 @@ public class AuctionDashboard extends JDialog {
 		lblSold.setText(str);
 	}
 
-	public void removeImages() {
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+	// Empty image panels
+	public void removeImages() {
 		contentPane.remove(panelCarImg);
 		panelSold.remove(panelSoldImg);
-
 	}
 
 	public void showBlackPanel() {

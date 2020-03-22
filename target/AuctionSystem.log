@@ -1,10 +1,14 @@
-Mar 18, 2020 10:44:49 PM utils.Log addLog
+Mar 22, 2020 7:29:31 PM utils.Log addLog
+INFO: Connection to database established.
+Mar 22, 2020 7:29:31 PM utils.Log addLog
+INFO: Successfully fetched all car items from database
+Mar 22, 2020 7:29:31 PM utils.Log addLog
+INFO: Auction Report panel constructed
+Mar 22, 2020 7:29:31 PM utils.Log addLog
 INFO: Menu frame created
-Mar 18, 2020 10:44:50 PM model.RecordsDAO <init>
+Mar 22, 2020 7:29:32 PM utils.Log addLog
+INFO: Connection to sqlite cars db closing.
+Mar 22, 2020 7:29:32 PM utils.Log addLog
 INFO: Connection to SQLite has been established.
-Mar 18, 2020 10:44:51 PM utils.Log addLog
-INFO: Live Auction Started
-Mar 18, 2020 10:45:05 PM utils.Log addLog
-INFO: Raise Amount changed: 250,000
-Mar 18, 2020 10:45:21 PM utils.Log addLog
-INFO: Raise Amount changed: 50,000
+Mar 22, 2020 7:29:32 PM utils.Log addLog
+INFO: Connection to sqlite recordsDB closing.
