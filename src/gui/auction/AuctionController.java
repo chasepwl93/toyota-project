@@ -277,6 +277,7 @@ public class AuctionController extends JFrame {
 		btnNext = new JButton("Next");
 		btnNext.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				btnNext.setEnabled(false);
 				dashboard.showBlackPanel();
 
 				// loops till user enters a number
@@ -329,6 +330,7 @@ public class AuctionController extends JFrame {
 
 			}
 		});
+		btnNext.setEnabled(false); // disabled by default
 		panelNextEnd.add(btnNext, "cell 1 0,alignx center");
 		panelNextEnd.add(btnExit, "cell 2 0");
 

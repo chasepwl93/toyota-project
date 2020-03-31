@@ -35,8 +35,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.awt.event.ActionEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
 /**
  * 
@@ -66,7 +64,6 @@ public class Register {
 	private JLabel lblStartingPError;
 	private JLabel lblMSPError;
 	private Log logger = Log.getInstance();
-	private Boolean SetUpdate = false;
 	private Boolean updateImgFlag = false;
 	public JButton btnSave;
 
@@ -320,9 +317,6 @@ public class Register {
 		imageSourcePath = "images\\" + car.getImageFile();
 		
 		setImagePanel();
-		
-		SetUpdate = true;
-
 	}
 
 	private void setImagePanel() {

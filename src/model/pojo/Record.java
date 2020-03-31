@@ -2,7 +2,6 @@ package model.pojo;
 
 public class Record {
 
-	private int id;
 	private int itemNo;
 	private String timeStamp;
 

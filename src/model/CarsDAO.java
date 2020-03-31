@@ -408,7 +408,7 @@ public class CarsDAO {
 				csvPrinter.printRecord(resultSet.getInt(1), resultSet.getString(2), resultSet.getInt(3),
 						resultSet.getString(4), resultSet.getString(5), resultSet.getInt(6), resultSet.getString(7),
 						resultSet.getString(8), resultSet.getInt(9), resultSet.getInt(10), resultSet.getString(11),
-						resultSet.getInt(12), resultSet.getString(13), resultSet.getInt(14));
+						resultSet.getInt(12), resultSet.getString(13), resultSet.getInt(14), resultSet.getString(15));
 
 			}
 

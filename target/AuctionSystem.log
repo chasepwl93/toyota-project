@@ -1,14 +1,96 @@
-Mar 22, 2020 7:29:31 PM utils.Log addLog
+Mar 31, 2020 4:59:47 PM utils.Log addLog
 INFO: Connection to database established.
-Mar 22, 2020 7:29:31 PM utils.Log addLog
+Mar 31, 2020 4:59:47 PM utils.Log addLog
 INFO: Successfully fetched all car items from database
-Mar 22, 2020 7:29:31 PM utils.Log addLog
+Mar 31, 2020 4:59:47 PM utils.Log addLog
 INFO: Auction Report panel constructed
-Mar 22, 2020 7:29:31 PM utils.Log addLog
+Mar 31, 2020 4:59:47 PM utils.Log addLog
 INFO: Menu frame created
-Mar 22, 2020 7:29:32 PM utils.Log addLog
-INFO: Connection to sqlite cars db closing.
-Mar 22, 2020 7:29:32 PM utils.Log addLog
+Mar 31, 2020 4:59:50 PM utils.Log addLog
+INFO: Successfully fetched all car items from database
+Mar 31, 2020 4:59:52 PM utils.Log addLog
+INFO: Register panel constructed
+Mar 31, 2020 5:00:11 PM utils.Log addLog
+INFO: Saved Image Filehd car wallpapers for mobile (4).jpg
+Mar 31, 2020 5:00:16 PM utils.Log addLog
 INFO: Connection to SQLite has been established.
-Mar 22, 2020 7:29:32 PM utils.Log addLog
+Mar 31, 2020 5:00:16 PM utils.Log addLog
+WARNING: Second Screen Not Detected.
+Mar 31, 2020 5:00:16 PM utils.Log addLog
+INFO: Auction Dashboard constructed.
+Mar 31, 2020 5:00:16 PM utils.Log addLog
+INFO: Getting next auction Item
+Mar 31, 2020 5:00:16 PM utils.Log addLog
+INFO: Car Image set.
+Mar 31, 2020 5:00:16 PM utils.Log addLog
+INFO: Auction item loaded for Item No.:3
+Mar 31, 2020 5:00:16 PM utils.Log addLog
+INFO: Auction Controller Constructed.
+Mar 31, 2020 5:00:16 PM utils.Log addLog
+INFO: Raise Amount changed: 50000
+Mar 31, 2020 5:00:16 PM utils.Log addLog
+INFO: Live Auction Started
+Mar 31, 2020 5:00:16 PM utils.Log addLog
+INFO: Screen Resized. Font Size changed.
+Mar 31, 2020 5:00:31 PM utils.Log addLog
+INFO: Item No item no. sold.
+Mar 31, 2020 5:00:40 PM utils.Log addLog
+INFO: Bidder No. 123 set for item No. 3
+Mar 31, 2020 5:00:42 PM utils.Log addLog
+INFO: Bidder nameiset for Item No.3
+Mar 31, 2020 5:00:42 PM utils.Log addLog
+INFO: Car with Item No. 3 successfully saved to database.
+Mar 31, 2020 5:00:42 PM utils.Log addLog
+INFO: Auction Time records saved for item no. 3
+Mar 31, 2020 5:00:42 PM utils.Log addLog
+INFO: Getting next auction Item
+Mar 31, 2020 5:00:42 PM utils.Log addLog
+INFO: Car Image set.
+Mar 31, 2020 5:00:42 PM utils.Log addLog
+INFO: Auction item loaded for Item No.:4
+Mar 31, 2020 5:00:57 PM utils.Log addLog
+INFO: Item No item no. sold.
+Mar 31, 2020 5:01:02 PM utils.Log addLog
+WARNING: Invalid Number format input for Bidder No.
+Mar 31, 2020 5:01:04 PM utils.Log addLog
+INFO: Bidder No. 0 set for item No. 4
+Mar 31, 2020 5:01:05 PM utils.Log addLog
+INFO: Bidder nameoset for Item No.4
+Mar 31, 2020 5:01:05 PM utils.Log addLog
+INFO: Car with Item No. 4 successfully saved to database.
+Mar 31, 2020 5:01:05 PM utils.Log addLog
+INFO: Auction Time records saved for item no. 4
+Mar 31, 2020 5:01:10 PM utils.Log addLog
+INFO: Successfully fetched all car items from database
+Mar 31, 2020 5:01:13 PM utils.Log addLog
+INFO: Successfully fetched all car items from database
+Mar 31, 2020 5:01:15 PM utils.Log addLog
+SEVERE: Records table data successfully exported.
+Mar 31, 2020 5:02:11 PM utils.Log addLog
+INFO: Car table exported to csv.
+Mar 31, 2020 5:02:17 PM utils.Log addLog
+INFO: Successfully fetched all car items from database
+Mar 31, 2020 5:02:17 PM utils.Log addLog
+INFO: Successfully fetched all car items from database
+Mar 31, 2020 5:02:23 PM utils.Log addLog
+INFO: Successfully deleted all car data.
+Mar 31, 2020 5:02:23 PM utils.Log addLog
+INFO: All records deleted.
+Mar 31, 2020 5:02:23 PM utils.Log addLog
+INFO: Successfully fetched all car items from database
+Mar 31, 2020 5:02:25 PM utils.Log addLog
+INFO: Successfully fetched all car items from database
+Mar 31, 2020 5:02:27 PM utils.Log addLog
+INFO: Successfully fetched all car items from database
+Mar 31, 2020 5:02:27 PM utils.Log addLog
+INFO: Successfully fetched all car items from database
+Mar 31, 2020 5:02:27 PM utils.Log addLog
+INFO: Successfully fetched all car items from database
+Mar 31, 2020 5:02:34 PM utils.Log addLog
+INFO: Successfully fetched all car items from database
+Mar 31, 2020 5:02:35 PM utils.Log addLog
+INFO: Successfully fetched all car items from database
+Mar 31, 2020 5:02:39 PM utils.Log addLog
+INFO: Connection to sqlite cars db closing.
+Mar 31, 2020 5:02:39 PM utils.Log addLog
 INFO: Connection to sqlite recordsDB closing.

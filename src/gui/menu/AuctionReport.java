@@ -23,6 +23,8 @@ import model.pojo.Car;
 import javax.swing.JTextField;
 import javax.swing.RowFilter;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
 import java.awt.Font;
 import java.awt.Image;
 import javax.swing.JScrollPane;
@@ -121,19 +123,31 @@ public class AuctionReport {
 		JButton btnDelete = new JButton("Clear All Data");
 		btnDelete.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				CarController cController = CarController.getInstance();
-				cController.deleteAll();
+				
+				int dialogResult = JOptionPane.showConfirmDialog(
+					    null,
+					    "Are you sure you want to delete all record?",
+					    "Please confirm",
+					    JOptionPane.YES_NO_OPTION);
+				
+				if (dialogResult == JOptionPane.YES_OPTION) {
 
-				RecordController rController = RecordController.getInstance();
-				rController.deleteAll();
+					CarController cController = CarController.getInstance();
+					cController.deleteAll();
 
-				refreshTableData();
+					RecordController rController = RecordController.getInstance();
+					rController.deleteAll();
 
-				File directory = new File("images\\");
-				try {
-					FileUtils.cleanDirectory(directory);
-				} catch (IOException e1) {
-					e1.printStackTrace();
+					refreshTableData();
+
+					File directory = new File("images\\");
+
+					try {
+						FileUtils.cleanDirectory(directory);
+					} catch (IOException e1) {
+						e1.printStackTrace();
+					}
+
 				}
 
 			}

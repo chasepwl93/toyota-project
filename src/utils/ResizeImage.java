@@ -1,8 +1,6 @@
 package utils;
 
-import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.EventQueue;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GraphicsConfiguration;
@@ -11,12 +9,12 @@ import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.Transparency;
 import java.awt.image.BufferedImage;
-import java.io.File;
 
 
 import javax.swing.JPanel;
 
 
+@SuppressWarnings("serial")
 public class ResizeImage extends JPanel {
 
 	private Image master;
